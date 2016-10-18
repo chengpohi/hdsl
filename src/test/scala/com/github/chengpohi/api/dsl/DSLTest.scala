@@ -21,8 +21,15 @@ class DSLTest extends FlatSpec with Matchers {
 
   it should "get element by id" in {
     val e: String = DSL {
-      element id "ac-gn-menuanchor-close" as "menu"
+      select id "ac-gn-menuanchor-close" as "menu"
     }
     e should be("""{"menu":"Close Menu"}""")
+  }
+
+  it should "get element by attr" in {
+    val e: String = DSL {
+      select attr "more-text" / "More" as "fff"
+    }
+    e should be("""{"fff":"hello World"}""")
   }
 }
