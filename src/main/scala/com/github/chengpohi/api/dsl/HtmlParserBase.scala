@@ -5,6 +5,8 @@ package com.github.chengpohi.api.dsl
 
 import org.jsoup.nodes.Document
 
+import scala.collection.JavaConversions._
+
 /**
   * htmlparser
   * Created by chengpohi on 15/10/2016.
@@ -18,6 +20,7 @@ trait AttrType
 
 case object text extends SelectType
 case object links extends SelectType
+case object src extends SelectType
 
 case object id extends AttrType
 case object attr extends AttrType
@@ -71,12 +74,13 @@ trait HtmlParserDefinition extends HtmlParserBase {
       }
     }
   }
-  case class TagDefinition(_tag: String) extends Definition {
-    override def execute: Map[String, String] = {
-      _type match {
-        case `text` =>
-          val text: String = doc.getElementsByTag(_tag).text()
-          Map(key -> text)
+  case class AttrDefinition(a: String) extends Definition {
+    override def execute: Map[String, Any] = {
+      _attrType match {
+        case `tag` => {
+          val results: List[String] = doc.getElementsByTag(_v).iterator().toList.map(_.attr(a)).filter(!_.isEmpty)
+          Map(key -> results)
+        }
       }
     }
   }

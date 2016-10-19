@@ -39,4 +39,11 @@ class DSLTest extends FlatSpec with Matchers {
     }
     e should be("""{"fff":"world"}""")
   }
+
+  it should "select element attr" in {
+    val result: String = DSL {
+      select attr "tt" where tag eq "img" as "imgs"
+    }
+    result should be("""{"imgs":["www.haha.com"]}""")
+  }
 }

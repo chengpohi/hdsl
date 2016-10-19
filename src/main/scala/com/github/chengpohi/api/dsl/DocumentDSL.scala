@@ -15,6 +15,7 @@ class DocumentDSL(d: Document) extends HtmlParserDefinition {
     def to(selectType: SelectType): Definition = selectType match {
       case `text` => TextDefinition()
     }
+    def attr(_attr: String): Definition = AttrDefinition(_attr)
   }
 
   implicit class PathRoute(key: String) {
