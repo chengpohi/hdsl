@@ -12,13 +12,13 @@ import org.jsoup.nodes.Document
 class DocumentDSL(d: Document) extends HtmlParserDefinition {
   override val doc: Document = d
   case object select {
-    def id(id: String): IdDefinition = IdDefinition(id)
-    def attr(key: (String, String)): AttrDefinition = AttrDefinition(key)
+    def to(selectType: SelectType): Definition = selectType match {
+      case `text` => TextDefinition()
+    }
   }
-  case object elements {
-  }
+
   implicit class PathRoute(key: String) {
-    def /(value: String): (String, String) = {
+    def ->(value: String): (String, String) = {
       (key, value)
     }
   }

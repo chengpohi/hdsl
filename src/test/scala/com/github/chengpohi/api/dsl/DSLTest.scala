@@ -19,17 +19,24 @@ class DSLTest extends FlatSpec with Matchers {
   import com.github.chengpohi.helper.HtmlParserHelper._
   import documentDSL._
 
-  it should "get element by id" in {
+  it should "select element by id" in {
     val e: String = DSL {
-      select id "ac-gn-menuanchor-close" as "menu"
+      select to text where id eq "ac-gn-menuanchor-close" as "menu"
     }
     e should be("""{"menu":"Close Menu"}""")
   }
 
-  it should "get element by attr" in {
+  it should "select element by attr" in {
     val e: String = DSL {
-      select attr "more-text" / "More" as "fff"
+      select to text where attr eq "more-text" -> "More" as "fff"
     }
     e should be("""{"fff":"hello World"}""")
+  }
+
+  it should "select element by tag name" in {
+    val e: String = DSL {
+      select to text where tag eq "hello" as "fff"
+    }
+    e should be("""{"fff":"world"}""")
   }
 }
