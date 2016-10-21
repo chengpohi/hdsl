@@ -28,9 +28,13 @@ class DSLTest extends FlatSpec with Matchers {
 
   it should "select element by attr" in {
     val e: String = DSL {
-      select to text where attr eq "more-text" -> "More" as "fff"
+      select to text where attr eq "itemprop" -> "description" as "desc"
     }
-    e should be("""{"fff":"hello World"}""")
+    val e2: String = DSL {
+      select to text where attr eq "itemprop" -> "name" and tag eq "h1" as "name"
+    }
+    e should be("""{"desc":"Candy Crush Saga"}""")
+    e2 should be("""{"name":"Candy Crush Saga"}""")
   }
 
   it should "select element by tag name" in {

@@ -32,6 +32,7 @@ trait Definition {
   var _attrType: AttrType = id
   var _v: String = ""
   var _attr: (String, String) = ("", "")
+  var _andAttrType: AttrType = id
   def execute: Map[String, Any]
   def as(k: String): Definition = {
     key = k
@@ -54,6 +55,11 @@ trait Definition {
 
   def where(attrType: AttrType): Definition = {
     _attrType = attrType
+    this
+  }
+
+  def and(attrType: AttrType): Definition = {
+    _andAttrType = attrType
     this
   }
 }
