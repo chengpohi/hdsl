@@ -33,8 +33,13 @@ class DSLTest extends FlatSpec with Matchers {
     val e2: String = DSL {
       select to text where attr eq "itemprop" -> "name" and tag eq "h1" as "name"
     }
+    val e3: String = DSL {
+      select to text where attr eq "more-text" -> "more" and attr eq "metrics-loc" -> "Titledbox_Description" as "more"
+    }
+
     e should be("""{"desc":"Candy Crush Saga"}""")
     e2 should be("""{"name":"Candy Crush Saga"}""")
+    e3 should be("""{"more":"Description Close Menu Candy Crush Saga"}""")
   }
 
   it should "select element by tag name" in {
@@ -48,6 +53,16 @@ class DSLTest extends FlatSpec with Matchers {
     val result: String = DSL {
       select attr "tt" where tag eq "img" as "imgs"
     }
-    result should be("""{"imgs":["www.haha.com"]}""")
+    val result2: String = DSL {
+      select attr "src" where tag eq "img" and attr eq "itemprop" -> "screenshot" under attr eq "metrics-loc" -> "iPhone" as "imgs"
+    }
+
+    val result3: String = DSL {
+      select attr "src" where tag eq "img" and attr eq "itemprop" -> "screenshot" under attr eq "metrics-loc" -> "iPad" as "imgs"
+    }
+
+    result should be("""{"imgs":"www.haha.com"}""")
+    result2 should be("""{"imgs":["1.jpeg","2.jpeg","3.jpeg","4.jpeg","5.jpeg"]}""")
+    result3 should be("""{"imgs":["6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg"]}""")
   }
 }
