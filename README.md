@@ -1,18 +1,10 @@
-/**
-  * chengpohi@gmail.com
-  */
-package com.github.chengpohi.api.dsl
+## Introduction
+How about using SQL syntax to parse html? :)
 
-import java.io.File
 
-import org.jsoup.Jsoup
-import org.scalatest.{FlatSpec, Matchers}
+## Example
 
-/**
-  * htmlparser
-  * Created by chengpohi on 15/10/2016.
-  */
-class DSLTest extends FlatSpec with Matchers {
+```
   val doc = Jsoup.parse(new File(this.getClass.getResource("/test.html").getFile), "utf-8")
   val documentDSL: DocumentDSL = new DocumentDSL(doc)
 
@@ -109,4 +101,4 @@ class DSLTest extends FlatSpec with Matchers {
     e4 should be("""{"genre":"Games"}""")
     e5 should be("""{"language":"Languages: English"}""")
   }
-}
+```
