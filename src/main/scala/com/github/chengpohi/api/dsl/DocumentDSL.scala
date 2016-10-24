@@ -19,8 +19,8 @@ class DocumentDSL(d: Document) extends HtmlParserDefinition {
   }
 
   implicit class PathRoute(key: String) {
-    def ->(value: String): (String, String) = {
-      (key, value)
+    def ->(value: String): String = {
+      key + " " + value
     }
   }
 }

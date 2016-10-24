@@ -3,9 +3,10 @@
   */
 package com.github.chengpohi.api.dsl
 
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 
 import scala.collection.JavaConversions._
+import scala.collection.mutable.ArrayBuffer
 
 /**
   * htmlparser
@@ -16,24 +17,29 @@ trait HtmlParserBase {
 }
 
 trait SelectType
+
 trait AttrType
 
 case object text extends SelectType
+
 case object links extends SelectType
+
 case object src extends SelectType
 
 case object id extends AttrType
+
 case object attr extends AttrType
+
 case object tag extends AttrType
 
 trait Definition {
   var key: String = "key"
   var _type: SelectType = text
-  var _attrType: AttrType = id
-  var _v: String = ""
-  var _attr: (String, String) = ("", "")
-  var _andAttrType: AttrType = id
+  var _attrType: ArrayBuffer[AttrType] = new ArrayBuffer[AttrType]()
+  var _v: ArrayBuffer[String] = new ArrayBuffer[String]()
+
   def execute: Map[String, Any]
+
   def as(k: String): Definition = {
     key = k
     this
@@ -45,51 +51,53 @@ trait Definition {
   }
 
   def eq(s: String): Definition = {
-    _v = s
-    this
-  }
-  def eq(s: (String, String)): Definition = {
-    _attr = s
+    _v.append(s)
     this
   }
 
   def where(attrType: AttrType): Definition = {
-    _attrType = attrType
+    _attrType.append(attrType)
     this
   }
 
   def and(attrType: AttrType): Definition = {
-    _andAttrType = attrType
+    _attrType.append(attrType)
     this
   }
 }
 
 trait HtmlParserDefinition extends HtmlParserBase {
+
   case class TextDefinition() extends Definition {
     override def execute: Map[String, Any] = {
-      _attrType match {
+      val e = _attrType.zip(_v).foldLeft(List(doc.body()))((a, k) => k._1 match {
         case `id` =>
-          val text: String = doc.getElementById(_v).text()
-          Map(key -> text)
+          a.map(_.getElementById(k._2))
         case `attr` =>
-          val text: String = doc.getElementsByAttributeValue(_attr._1, _attr._2).text()
-          Map(key -> text)
+          val s: Array[String] = k._2.split(" ")
+          a.flatMap(_.getElementsByAttributeValue(s(0), s(1)))
         case `tag` =>
-          val text: String = doc.getElementsByTag(_v).text()
-          Map(key -> text)
+          a.flatMap(_.getElementsByTag(k._2))
+      })
+      e.size match {
+        case 1 => Map(key -> e.head.text())
+        case _ => Map(key -> e.map(_.text()).filter(!_.isEmpty))
       }
+
     }
   }
-  case class AttrDefinition(a: String) extends Definition {
+
+  case class AttrDefinition(_a: String) extends Definition {
     override def execute: Map[String, Any] = {
-      _attrType match {
-        case `tag` => {
-          val results: List[String] = doc.getElementsByTag(_v).iterator().toList.map(_.attr(a)).filter(!_.isEmpty)
-          Map(key -> results)
+      val results = _attrType.zip(_v).foldLeft(List(doc.body()))((a, k) => {
+        k._1 match {
+          case `tag` => a.flatMap(_.getElementsByTag(k._2))
         }
-      }
+      })
+      Map(key -> results.map(_.attr(_a)).filter(!_.isEmpty))
     }
   }
+
 }
 
 object DSL {
