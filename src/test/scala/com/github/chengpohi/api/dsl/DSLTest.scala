@@ -36,10 +36,22 @@ class DSLTest extends FlatSpec with Matchers {
     val e3: String = DSL {
       select to text where attr eq "more-text" -> "more" and attr eq "metrics-loc" -> "Titledbox_Description" as "more"
     }
+    val e4: String = DSL {
+      select to text where attr eq "itemprop" -> "price" as "price"
+    }
+    val e5: String = DSL {
+      select to text where attr eq "itemprop" -> "datePublished" as "publishDate"
+    }
+    val e6: String = DSL {
+      select to text where attr eq "itemprop" -> "softwareVersion" as "version"
+    }
 
     e should be("""{"desc":"Candy Crush Saga"}""")
     e2 should be("""{"name":"Candy Crush Saga"}""")
     e3 should be("""{"more":"Description Close Menu Candy Crush Saga"}""")
+    e4 should be("""{"price":"Free"}""")
+    e5 should be("""{"publishDate":"Oct 19, 2016"}""")
+    e6 should be("""{"version":"1.86.0"}""")
   }
 
   it should "select element by tag name" in {
@@ -64,5 +76,28 @@ class DSLTest extends FlatSpec with Matchers {
     result should be("""{"imgs":"www.haha.com"}""")
     result2 should be("""{"imgs":["1.jpeg","2.jpeg","3.jpeg","4.jpeg","5.jpeg"]}""")
     result3 should be("""{"imgs":["6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg"]}""")
+  }
+
+  it should "select elements by class" in {
+    val e: String = DSL {
+      select to text where clazz eq "customerReviewTitle" as "reviewTitle"
+    }
+    val e2: String = DSL {
+      select to text where clazz eq "content" under clazz eq "customer-review" as "reviewContent"
+    }
+    val e3: String = DSL {
+      select attr "aria-label" where clazz eq "rating" under clazz eq "customer-review" as "ratings"
+    }
+    val e4: String = DSL {
+      select to text where clazz eq "genre" and tag eq "a" under id eq "left-stack" as "genre"
+    }
+    val e5: String = DSL {
+      select to text where clazz eq "language" as "language"
+    }
+    e should be("""{"reviewTitle":["Stealing our money!","Won't load on ipod touch 4th gen since 'update'","Re-rating to 1"]}""")
+    e2 should be("""{"reviewContent":["play","world","haha"]}""")
+    e3 should be("""{"ratings":["1 star","1 star","1 star"]}""")
+    e4 should be("""{"genre":"Games"}""")
+    e5 should be("""{"language":"Languages: English"}""")
   }
 }

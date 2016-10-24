@@ -28,6 +28,8 @@ case object src extends SelectType
 
 case object id extends AttrType
 
+case object clazz extends AttrType
+
 case object attr extends AttrType
 
 case object tag extends AttrType
@@ -85,6 +87,7 @@ trait Definition {
       a.flatMap(_.getElementsByAttributeValue(s(0), s(1)))
     case `tag` =>
       a.flatMap(_.getElementsByTag(k._2))
+    case `clazz` => a.flatMap(_.getElementsByClass(k._2))
   })
 
 
