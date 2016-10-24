@@ -126,4 +126,5 @@ trait HtmlParserDefinition extends HtmlParserBase {
 
 object DSL {
   def apply(d: Definition): Map[String, Any] = d.execute
+  def apply(d: List[Definition]): List[Map[String, Any]] = d.map(_.execute)
 }
