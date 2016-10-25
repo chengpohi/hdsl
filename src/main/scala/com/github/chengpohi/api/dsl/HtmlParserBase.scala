@@ -98,6 +98,13 @@ trait Definition {
       val underEs: List[Element] = attrInterpreter(_underAttrType.zip(_underV), es)
       attrInterpreter(_attrType.zip(_v), underEs)
   }
+
+  def tagMatcher(_tag: String): AttrType = _tag match {
+    case "id" => id
+    case "attr" => attr
+    case "tag" => tag
+    case "clazz" => clazz
+  }
 }
 
 trait HtmlParserDefinition extends HtmlParserBase {
