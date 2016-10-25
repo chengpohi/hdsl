@@ -2,7 +2,6 @@ package com.github.chengpohi
 
 import java.io.File
 
-import com.github.chengpohi.parser.HDSLParser
 import org.jsoup.Jsoup
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -11,7 +10,7 @@ import org.scalatest.{FlatSpec, Matchers}
   */
 class HDSLInterpreterTest extends FlatSpec with Matchers {
   val doc = Jsoup.parse(new File(this.getClass.getResource("/test.html").getFile), "utf-8")
-  val interpreter: HDSLInterpreter = new HDSLInterpreter(new HDSLParser(doc))
+  val interpreter: HDSLInterpreter = new HDSLInterpreter(doc)
 
   import com.github.chengpohi.helper.HtmlParserHelper._
 
