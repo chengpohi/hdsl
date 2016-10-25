@@ -1,4 +1,4 @@
-name := "htmlparser"
+name := "HDSL"
 
 organization := "com.github.chengpohi"
 
