@@ -16,17 +16,8 @@ ivyScala := ivyScala.value map {
 
 libraryDependencies ++= Seq(
   "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test",
-  "com.typesafe" % "config" % "1.3.0",
   "com.lihaoyi" %% "fastparse" % "0.4.1",
   "org.jsoup" % "jsoup" % "1.8.3",
-  "jline" % "jline" % "2.12",
-  "org.scalaz" %% "scalaz-core" % "7.2.1",
-  "org.scalaz" %% "scalaz-effect" % "7.2.1",
-  "org.scalanlp" %% "breeze" % "0.12",
-  "org.scalanlp" %% "breeze-viz" % "0.12",
-  "org.apache.logging.log4j" % "log4j-1.2-api" % "2.7",
-  "org.apache.logging.log4j" % "log4j-api" % "2.7",
-  "org.apache.logging.log4j" % "log4j-core" % "2.7",
   "org.json4s" %% "json4s-native" % "3.2.10",
   "org.json4s" %% "json4s-jackson" % "3.2.10"
 )
