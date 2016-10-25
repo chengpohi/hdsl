@@ -15,7 +15,7 @@ class HDSLInterpreterTest extends FlatSpec with Matchers {
 
   import com.github.chengpohi.helper.HtmlParserHelper._
 
-  it should "parse" in {
+  it should "parse text" in {
     val result: String = interpreter.intercept("""select to text where id eq "ac-gn-menuanchor-close" as "menu"""".stripMargin)
     result should be("""{"menu":"Close Menu"}""")
 
@@ -47,5 +47,21 @@ class HDSLInterpreterTest extends FlatSpec with Matchers {
     e4 should be("""{"price":"Free"}""")
     e5 should be("""{"publishDate":"Oct 19, 2016"}""")
     e6 should be("""{"version":"1.86.0"}""")
+  }
+  it should "parse attr" in {
+    val result: String = interpreter.intercept("""
+      select attr "tt" where tag eq "img" as "imgs"
+    """)
+    val result2: String = interpreter.intercept("""
+      select attr "src" where tag eq "img" and attr eq "itemprop" -> "screenshot" under attr eq "metrics-loc" -> "iPhone" as "imgs"
+    """)
+
+    val result3: String = interpreter.intercept("""
+      select attr "src" where tag eq "img" and attr eq "itemprop" -> "screenshot" under attr eq "metrics-loc" -> "iPad" as "imgs"
+    """)
+
+    result should be("""{"imgs":"www.haha.com"}""")
+    result2 should be("""{"imgs":["1.jpeg","2.jpeg","3.jpeg","4.jpeg","5.jpeg"]}""")
+    result3 should be("""{"imgs":["6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg"]}""")
   }
 }
