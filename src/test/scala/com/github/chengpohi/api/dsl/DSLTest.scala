@@ -121,6 +121,5 @@ class DSLTest extends FlatSpec with Matchers {
     }
 
     e should startWith("""{"reviews":[{"title":"Stealing our money!","rating":"1 star","content":"play","userInfo":"by Marmeehayden"}""")
-    println(e)
   }
 }

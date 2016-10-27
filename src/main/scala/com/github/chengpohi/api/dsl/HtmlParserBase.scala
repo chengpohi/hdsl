@@ -129,7 +129,7 @@ trait HtmlParserDefinition extends HtmlParserBase {
     }
   }
 
-  case class NestDefinition(definitions: List[Definition]) extends Definition {
+  case class NestDefinition(definitions: Seq[Definition]) extends Definition {
     override def execute: Map[String, Any] = {
       val res = definitions
         .map(d => d.execute.asInstanceOf[Map[String, List[String]]].head)

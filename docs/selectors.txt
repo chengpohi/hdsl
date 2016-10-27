@@ -10,5 +10,12 @@ select to text where clazz eq "language" as "language"
 select to text where attr eq "itemprop" -> "operatingSystem" as "os"
 select to text where attr eq "itemprop" -> "ratingValue" as "ratingValue"
 select to text where clazz eq "rating-count" under clazz eq "rating" as "ratings"
+nest(
+  select to text where clazz eq "customerReviewTitle" as "title",
+  select attr "aria-label" where clazz eq "rating" under clazz eq "customer-review" as "rating",
+  select to text where clazz eq "content" under clazz eq "customer-review" as "content",
+  select to text where clazz eq "user-info" under clazz eq "customer-review" as "userInfo"
+) as "reviews"
+
 
 

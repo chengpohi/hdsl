@@ -13,6 +13,7 @@ class HDSLParser(_doc: Document) extends ParserBasic with HtmlParserDefinition {
   import WhitespaceApi._
 
   private def mergeConditions(j: (String, String, Option[String])) = (j._1, j._2 + j._3.map(t => " " + t).getOrElse(""))
+
   private val whereCondition = P("where" ~ (variable ~ "eq" ~ string ~ ("->" ~ string).? ~ "and".?).rep(1)).map(i => i.map(mergeConditions))
   private val underCondition = P("under" ~ variable ~ "eq" ~ string ~ ("->" ~ string).?).map(j => mergeConditions(j))
   private val asCondition = P("as" ~ string)
@@ -42,9 +43,17 @@ class HDSLParser(_doc: Document) extends ParserBasic with HtmlParserDefinition {
     t._4.map(i => definition.as(i))
     definition
   })
-  private val selectParser = P("select" ~ (toTextParser | attrParser))
 
-  def parse(source: String): Parsed[Definition] = selectParser.parse(source)
+  private val selectParser = P("select" ~ (toTextParser | attrParser))
+  private val nestParser = P("nest" ~ "(" ~ selectParser.rep(1, sep = ",") ~ ")" ~ asCondition).map(i => {
+    val nestDefinition = NestDefinition(i._1)
+    nestDefinition.as(i._2)
+    nestDefinition
+  })
+
+  private val hdslParser = P(selectParser | nestParser)
+
+  def parse(source: String): Parsed[Definition] = hdslParser.parse(source)
 
   override val doc: Document = _doc
 }

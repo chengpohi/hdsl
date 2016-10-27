@@ -48,19 +48,35 @@ class HDSLInterpreterTest extends FlatSpec with Matchers {
     e6 should be("""{"version":"1.86.0"}""")
   }
   it should "parse attr" in {
-    val result: String = interpreter.intercept("""
+    val result: String = interpreter.intercept(
+      """
       select attr "tt" where tag eq "img" as "imgs"
-    """)
-    val result2: String = interpreter.intercept("""
+      """)
+    val result2: String = interpreter.intercept(
+      """
       select attr "src" where tag eq "img" and attr eq "itemprop" -> "screenshot" under attr eq "metrics-loc" -> "iPhone" as "imgs"
-    """)
+      """)
 
-    val result3: String = interpreter.intercept("""
+    val result3: String = interpreter.intercept(
+      """
       select attr "src" where tag eq "img" and attr eq "itemprop" -> "screenshot" under attr eq "metrics-loc" -> "iPad" as "imgs"
-    """)
+      """)
 
     result should be("""{"imgs":"www.haha.com"}""")
     result2 should be("""{"imgs":["1.jpeg","2.jpeg","3.jpeg","4.jpeg","5.jpeg"]}""")
     result3 should be("""{"imgs":["6.jpeg","7.jpeg","8.jpeg","9.jpeg","10.jpeg"]}""")
+  }
+
+  it should "parse nest object" in {
+    val result: String = interpreter.intercept(
+      """
+      nest(
+        select to text where clazz eq "customerReviewTitle" as "title",
+        select attr "aria-label" where clazz eq "rating" under clazz eq "customer-review" as "rating",
+        select to text where clazz eq "content" under clazz eq "customer-review" as "content",
+        select to text where clazz eq "user-info" under clazz eq "customer-review" as "userInfo"
+      ) as "reviews"
+      """)
+    result should startWith("""{"reviews":[{"title":"Stealing our money!","rating":"1 star","content":"play","userInfo":"by Marmeehayden"}""")
   }
 }
