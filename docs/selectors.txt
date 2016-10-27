@@ -1,0 +1,14 @@
+select to text where attr eq "itemprop" -> "description" as "desc"
+select to text where attr eq "more-text" -> "more" and attr eq "metrics-loc" -> "Titledbox_Description" as "more"
+select attr "src" where tag eq "img" and attr eq "itemprop" -> "screenshot" under attr eq "metrics-loc" -> "iPhone" as "imgs"
+select attr "src" where tag eq "img" and attr eq "itemprop" -> "screenshot" under attr eq "metrics-loc" -> "iPad" as "imgs"
+select to text where attr eq "itemprop" -> "price" as "price"
+select to text where clazz eq "genre" and tag eq "a" under id eq "left-stack" as "genre"
+select to text where attr eq "itemprop" -> "datePublished" as "publishDate"
+select to text where attr eq "itemprop" -> "softwareVersion" as "version"
+select to text where clazz eq "language" as "language"
+select to text where attr eq "itemprop" -> "operatingSystem" as "os"
+select to text where attr eq "itemprop" -> "ratingValue" as "ratingValue"
+select to text where clazz eq "rating-count" under clazz eq "rating" as "ratings"
+
+

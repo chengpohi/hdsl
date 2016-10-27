@@ -109,4 +109,18 @@ class DSLTest extends FlatSpec with Matchers {
     e4 should be("""{"genre":"Games"}""")
     e5 should be("""{"language":"Languages: English"}""")
   }
+
+  it should "select elements as nest object" in {
+    val e: String = DSL {
+      nest(
+        select to text where clazz eq "customerReviewTitle" as "title",
+        select attr "aria-label" where clazz eq "rating" under clazz eq "customer-review" as "rating",
+        select to text where clazz eq "content" under clazz eq "customer-review" as "content",
+        select to text where clazz eq "user-info" under clazz eq "customer-review" as "userInfo"
+      ) as "reviews"
+    }
+
+    e should startWith("""{"reviews":[{"title":"Stealing our money!","rating":"1 star","content":"play","userInfo":"by Marmeehayden"}""")
+    println(e)
+  }
 }

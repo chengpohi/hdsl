@@ -35,7 +35,7 @@ case object attr extends AttrType
 case object tag extends AttrType
 
 trait Definition {
-  var key: String = "key"
+  var _key: String = "key"
   var _underCondition: Boolean = false
   var _type: SelectType = text
   var _attrType: ArrayBuffer[AttrType] = new ArrayBuffer[AttrType]()
@@ -46,7 +46,7 @@ trait Definition {
   def execute: Map[String, Any]
 
   def as(k: String): Definition = {
-    key = k
+    _key = k
     this
   }
 
@@ -113,8 +113,8 @@ trait HtmlParserDefinition extends HtmlParserBase {
     override def execute: Map[String, Any] = {
       val e = dslMatcher(List(doc.body()))
       e.size match {
-        case 1 => Map(key -> e.head.text())
-        case _ => Map(key -> e.map(_.text()).filter(!_.isEmpty))
+        case 1 => Map(_key -> e.head.text())
+        case _ => Map(_key -> e.map(_.text()).filter(!_.isEmpty))
       }
     }
   }
@@ -123,9 +123,18 @@ trait HtmlParserDefinition extends HtmlParserBase {
     override def execute: Map[String, Any] = {
       val results = dslMatcher(List(doc.body())).map(_.attr(_a)).filter(!_.isEmpty)
       results.size match {
-        case 1 => Map(key -> results.head)
-        case _ => Map(key -> results)
+        case 1 => Map(_key -> results.head)
+        case _ => Map(_key -> results)
       }
+    }
+  }
+
+  case class NestDefinition(definitions: List[Definition]) extends Definition {
+    override def execute: Map[String, Any] = {
+      val res = definitions
+        .map(d => d.execute.asInstanceOf[Map[String, List[String]]].head)
+        .map(k => k._2.map(i => (k._1, i))).transpose.map(_.toMap)
+      Map(_key -> res)
     }
   }
 
@@ -133,5 +142,6 @@ trait HtmlParserDefinition extends HtmlParserBase {
 
 object DSL {
   def apply(d: Definition): Map[String, Any] = d.execute
+
   def apply(d: List[Definition]): List[Map[String, Any]] = d.map(_.execute)
 }
