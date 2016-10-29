@@ -16,6 +16,19 @@ nest(
   select to text where clazz eq "content" under clazz eq "customer-review" as "content",
   select to text where clazz eq "user-info" under clazz eq "customer-review" as "userInfo"
 ) as "reviews"
-
-
-
+nest(
+    select to text where clazz eq "in-app-title" under clazz eq "in-app-purchases" as "name",
+    select to text where clazz eq "in-app-price" under clazz eq "in-app-purchases" as "price"
+) as "purchases"
+nest(
+    select attr "src" where tag eq "img" under clazz "swoosh" as "img",
+    select attr "href" where tag eq "a" under clazz "swoosh" as "link",
+    select to text where clazz eq "name" under clazz "swoosh" as "name",
+    select to text where clazz eq "genre" under clazz "swoosh" as "genre"
+) as "apps"
+nest(
+  select attr "src" where tag eq "img" and clazz eq "artwork" under clazz eq "swoosh" as "img",
+  select attr "href" where tag eq "a" and clazz eq "name" under clazz eq "swoosh" as "link",
+  select to text where clazz eq "name" under clazz eq "swoosh" as "name",
+  select to text where clazz eq "genre" under clazz eq "swoosh" as "genre"
+) as "apps"

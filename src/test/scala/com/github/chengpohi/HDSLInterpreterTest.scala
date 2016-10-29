@@ -77,6 +77,24 @@ class HDSLInterpreterTest extends FlatSpec with Matchers {
         select to text where clazz eq "user-info" under clazz eq "customer-review" as "userInfo"
       ) as "reviews"
       """)
+    val result2: String = interpreter.intercept(
+      """
+      nest(
+        select to text where clazz eq "in-app-title" under clazz eq "in-app-purchases" as "name",
+        select to text where clazz eq "in-app-price" under clazz eq "in-app-purchases" as "price"
+      ) as "purchases"
+      """)
+    val result3: String = interpreter.intercept(
+      """
+      nest(
+        select attr "src" where tag eq "img" and clazz eq "artwork" under clazz eq "swoosh" as "img",
+        select attr "href" where tag eq "a" and clazz eq "name" under clazz eq "swoosh" as "link",
+        select to text where clazz eq "name" under clazz eq "swoosh" as "name",
+        select to text where clazz eq "genre" under clazz eq "swoosh" as "genre"
+      ) as "apps"
+      """)
     result should startWith("""{"reviews":[{"title":"Stealing our money!","rating":"1 star","content":"play","userInfo":"by Marmeehayden"}""")
+    result2 should startWith("""{"purchases":[{"name":"Extra Moves","price":"$0.99"},""")
+    result3 should startWith("""{"apps":[{"img":"https://s.mzstatic.com/htmlResources/d0cf036/frameworks/images/p.png","link":"h""")
   }
 }

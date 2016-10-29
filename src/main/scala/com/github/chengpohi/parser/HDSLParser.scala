@@ -14,10 +14,10 @@ class HDSLParser(_doc: Document) extends ParserBasic with HtmlParserDefinition {
 
   private def mergeConditions(j: (String, String, Option[String])) = (j._1, j._2 + j._3.map(t => " " + t).getOrElse(""))
 
-  private val whereCondition = P("where" ~ (variable ~ "eq" ~ string ~ ("->" ~ string).? ~ "and".?).rep(1)).map(i => i.map(mergeConditions))
-  private val underCondition = P("under" ~ variable ~ "eq" ~ string ~ ("->" ~ string).?).map(j => mergeConditions(j))
+  private val whereCondition = P("where" ~/ (variable ~ "eq" ~/ string ~ ("->" ~ string).? ~ "and".?).rep(1)).map(i => i.map(mergeConditions))
+  private val underCondition = P("under" ~/ variable ~ "eq" ~/ string ~ ("->" ~ string).?).map(j => mergeConditions(j))
   private val asCondition = P("as" ~ string)
-  private val toTextParser = P("to" ~ "text" ~ whereCondition ~ underCondition.? ~ asCondition.?).map(t => {
+  private val toTextParser = P("to" ~ "text" ~ whereCondition ~/ underCondition.? ~/ asCondition.?).map(t => {
     val definition: Definition = TextDefinition()
     t._1.map(i => {
       val _tag = definition.tagMatcher(i._1)
@@ -30,7 +30,7 @@ class HDSLParser(_doc: Document) extends ParserBasic with HtmlParserDefinition {
     t._3.map(i => definition.as(i))
     definition
   })
-  private val attrParser = P("attr" ~ string ~ whereCondition ~ underCondition.? ~ asCondition.?).map(t => {
+  private val attrParser = P("attr" ~ string ~ whereCondition ~/ underCondition.? ~/ asCondition.?).map(t => {
     val definition: Definition = AttrDefinition(t._1)
     t._2.map(i => {
       val _tag = definition.tagMatcher(i._1)
