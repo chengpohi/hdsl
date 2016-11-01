@@ -2,7 +2,7 @@
 How about using SQL syntax to parse html? :)
 
 
-## Example
+## Intercept By DSL 
 
 ```
   val doc = Jsoup.parse(new File(this.getClass.getResource("/test.html").getFile), "utf-8")
@@ -101,4 +101,19 @@ How about using SQL syntax to parse html? :)
     e4 should be("""{"genre":"Games"}""")
     e5 should be("""{"language":"Languages: English"}""")
   }
+```
+
+
+## Intercept Batch DSLs
+
+use `;` as the context splitter.
+
+```
+select to text where clazz eq "rating-count" under clazz eq "rating" as "ratings";
+nest(
+  select to text where clazz eq "customerReviewTitle" as "title",
+  select attr "aria-label" where clazz eq "rating" under clazz eq "customer-review" as "rating",
+  select to text where clazz eq "content" under clazz eq "customer-review" as "content",
+  select to text where clazz eq "user-info" under clazz eq "customer-review" as "userInfo"
+) as "reviews";
 ```
