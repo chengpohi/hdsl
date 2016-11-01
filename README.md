@@ -103,6 +103,19 @@ How about using SQL syntax to parse html? :)
   }
 ```
 
+## Nest object
+
+```
+nest(
+  select to text where clazz eq "customerReviewTitle" as "title",
+  select attr "aria-label" where clazz eq "rating" under clazz eq "customer-review" as "rating",
+  select to text where clazz eq "content" under clazz eq "customer-review" as "content",
+  select to text where clazz eq "user-info" under clazz eq "customer-review" as "userInfo"
+) as "reviews"
+```
+
+`nest` can be used to create a nest objects by the nest **DSLs**. and they will transpose these elements one by one.
+
 
 ## Intercept Batch DSLs
 
