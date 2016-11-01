@@ -51,9 +51,9 @@ class HDSLParser(_doc: Document) extends ParserBasic with HtmlParserDefinition {
     nestDefinition
   })
 
-  private val hdslParser = P(selectParser | nestParser)
+  private val hdslParser = P((selectParser | nestParser).rep(0, sep=";"))
 
-  def parse(source: String): Parsed[Definition] = hdslParser.parse(source)
+  def parse(source: String): Parsed[Seq[Definition]] = hdslParser.parse(source)
 
   override val doc: Document = _doc
 }

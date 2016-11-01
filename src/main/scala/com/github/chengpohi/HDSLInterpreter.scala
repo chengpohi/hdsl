@@ -12,7 +12,7 @@ class HDSLInterpreter(doc: Document) {
   def intercept(source: String): Map[String, Any] = {
     val parseResult = hdslParser.parse(source.trim)
     parseResult match {
-      case Success(f, state) => f.execute
+      case Success(f, state) => f.flatMap(_.execute).toMap
       case Failure(_, _, t) => Map("error" -> t.traced.trace)
     }
   }

@@ -5,6 +5,8 @@ import java.io.File
 import org.jsoup.Jsoup
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.io.Source
+
 /**
   * Created by xiachen on 25/10/2016.
   */
@@ -96,5 +98,12 @@ class HDSLInterpreterTest extends FlatSpec with Matchers {
     result should startWith("""{"reviews":[{"title":"Stealing our money!","rating":"1 star","content":"play","userInfo":"by Marmeehayden"}""")
     result2 should startWith("""{"purchases":[{"name":"Extra Moves","price":"$0.99"},""")
     result3 should startWith("""{"apps":[{"img":"https://s.mzstatic.com/htmlResources/d0cf036/frameworks/images/p.png","link":"h""")
+  }
+
+  it should "intercept files" in {
+    val source: String = Source.fromURL(this.getClass.getResource("/selectors.txt")).getLines().mkString("")
+    val result: Map[String, Any] = interpreter.intercept(source)
+    result.size should be(14)
+    result.keys should contain("reviews")
   }
 }
