@@ -1,4 +1,4 @@
-name := "HDSL"
+name := "hdsl"
 
 organization := "com.github.chengpohi"
 
