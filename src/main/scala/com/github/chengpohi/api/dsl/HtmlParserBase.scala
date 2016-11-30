@@ -91,13 +91,13 @@ trait Definition {
   })
 
 
-  def dslMatcher(es: List[Element]): List[Element] = _underAttrType.isEmpty match {
+  def dslMatcher(es: List[Element]): List[Element] = (_underAttrType.isEmpty match {
     case true =>
       attrInterpreter(_attrType.zip(_v), es)
     case false =>
       val underEs: List[Element] = attrInterpreter(_underAttrType.zip(_underV), es)
       attrInterpreter(_attrType.zip(_v), underEs)
-  }
+  }).filter(_ != null)
 
   def tagMatcher(_tag: String): AttrType = _tag match {
     case "id" => id
@@ -113,6 +113,7 @@ trait HtmlParserDefinition extends HtmlParserBase {
     override def execute: Map[String, Any] = {
       val e = dslMatcher(List(doc.body()))
       e.size match {
+        case 0 => Map(_key -> List())
         case 1 => Map(_key -> e.head.text())
         case _ => Map(_key -> e.map(_.text()).filter(!_.isEmpty))
       }
@@ -123,6 +124,7 @@ trait HtmlParserDefinition extends HtmlParserBase {
     override def execute: Map[String, Any] = {
       val results = dslMatcher(List(doc.body())).map(_.attr(_a)).filter(!_.isEmpty)
       results.size match {
+        case 0 => Map(_key -> List())
         case 1 => Map(_key -> results.head)
         case _ => Map(_key -> results)
       }
@@ -133,7 +135,7 @@ trait HtmlParserDefinition extends HtmlParserBase {
     override def execute: Map[String, Any] = {
       val res = definitions
         .map(d => d.execute.asInstanceOf[Map[String, List[String]]].head)
-        .map(k => k._2.map(i => (k._1, i))).transpose.map(_.toMap)
+        .filter(_._2.nonEmpty).map(k => k._2.map(i => (k._1, i))).transpose.map(_.toMap)
       Map(_key -> res)
     }
   }

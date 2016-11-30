@@ -106,4 +106,18 @@ class HDSLInterpreterTest extends FlatSpec with Matchers {
     result.size should be(14)
     result.keys should contain("reviews")
   }
+  it should "return empty when not found element" in {
+    val result: Map[String, Any] = interpreter.intercept("""select to text where id eq "notfoundid" as "menu"""".stripMargin)
+    result should be(Map("menu" -> List()))
+    val result3: String = interpreter.intercept(
+      """
+      nest(
+        select attr "src" where tag eq "img" and clazz eq "notfound" under clazz eq "swoosh" as "img",
+        select attr "href" where tag eq "a" and clazz eq "name" under clazz eq "swoosh" as "link",
+        select to text where clazz eq "name" under clazz eq "swoosh" as "name",
+        select to text where clazz eq "genre" under clazz eq "swoosh" as "genre"
+      ) as "apps"
+      """)
+    result3 should not contain("src")
+  }
 }
