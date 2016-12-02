@@ -7,7 +7,6 @@ import org.jsoup.nodes.{Document, Element}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ArrayBuffer
-import scala.util.Try
 
 /**
   * htmlparser
@@ -133,15 +132,28 @@ trait HtmlParserDefinition extends HtmlParserBase {
   }
 
   case class NestDefinition(definitions: Seq[Definition]) extends Definition {
+
     override def execute: Map[String, Any] = {
       val res = definitions
-        .map(d =>
-          Try(d.execute.asInstanceOf[Map[String, List[String]]].head).getOrElse(("", List()))
-        )
+        .map(_.execute)
+        .map {
+          case a: Map[String, List[String]] if a.head._2.isInstanceOf[List[String]] => a.head
+          case _ => ("", List())
+        }
         .filter(_._2.nonEmpty)
         .map(k => k._2.map(i => (k._1, i)))
-        .transpose.map(_.toMap)
+        .transpose
+        .map(_.toMap)
       Map(_key -> res)
+    }
+
+    def transpose[A](xs: List[List[A]]): List[List[A]] = xs.filter(_.nonEmpty) match {
+      case Nil => Nil
+      case ys: List[List[A]] => ys.map {
+        _.head
+      } :: transpose(ys.map {
+        _.tail
+      })
     }
   }
 

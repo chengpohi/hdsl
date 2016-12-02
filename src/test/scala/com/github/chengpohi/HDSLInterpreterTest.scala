@@ -118,6 +118,16 @@ class HDSLInterpreterTest extends FlatSpec with Matchers {
         select to text where clazz eq "genre" under clazz eq "swoosh" as "genre"
       ) as "apps"
       """)
-    result3 should not contain("src")
+    result3 should not contain "src"
+    val result4: String = interpreter.intercept(
+      """
+      nest(
+        select attr "src" where tag eq "img" and clazz eq "notfound" under clazz eq "swoosh" as "img",
+        select attr "href" where tag eq "a" and clazz eq "notfound" under clazz eq "swoosh" as "link",
+        select to text where clazz eq "name" under clazz eq "notfound" as "name",
+        select to text where clazz eq "genre" under clazz eq "notfound" as "genre"
+      ) as "apps"
+      """)
+    result4.contains("[]") should be (true)
   }
 }
