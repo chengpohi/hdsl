@@ -9,11 +9,12 @@ import org.jsoup.nodes.Document
   */
 class HDSLInterpreter(doc: Document) {
   private val hdslParser: HDSLParser = new HDSLParser(doc)
+
   def intercept(source: String): Map[String, Any] = {
     val parseResult = hdslParser.parse(source.trim)
     parseResult match {
       case Success(f, state) => f.flatMap(_.execute).toMap
-      case Failure(_, _, t) => Map("error" -> t.traced.trace)
+      case Failure(_, _, t) => throw new Exception(t.traced.trace)
     }
   }
 }

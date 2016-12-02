@@ -7,6 +7,7 @@ import org.jsoup.nodes.{Document, Element}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Try
 
 /**
   * htmlparser
@@ -79,7 +80,7 @@ trait Definition {
     this
   }
 
-  def attrInterpreter(as: ArrayBuffer[(AttrType, String)], es: List[Element]): List[Element] = as.foldLeft(es)((a, k) => k._1 match {
+  def attrInterpreter(as: ArrayBuffer[(AttrType, String)], es: List[Element]): List[Element] = (as.foldLeft(es.filter(_ != null))((a, k) => k._1 match {
     case `id` =>
       a.map(_.getElementById(k._2))
     case `attr` =>
@@ -88,16 +89,16 @@ trait Definition {
     case `tag` =>
       a.flatMap(_.getElementsByTag(k._2))
     case `clazz` => a.flatMap(_.getElementsByClass(k._2))
-  })
+  })).filter(_ != null)
 
 
-  def dslMatcher(es: List[Element]): List[Element] = (_underAttrType.isEmpty match {
+  def dslMatcher(es: List[Element]): List[Element] = _underAttrType.isEmpty match {
     case true =>
       attrInterpreter(_attrType.zip(_v), es)
     case false =>
       val underEs: List[Element] = attrInterpreter(_underAttrType.zip(_underV), es)
       attrInterpreter(_attrType.zip(_v), underEs)
-  }).filter(_ != null)
+  }
 
   def tagMatcher(_tag: String): AttrType = _tag match {
     case "id" => id
@@ -111,7 +112,7 @@ trait HtmlParserDefinition extends HtmlParserBase {
 
   case class TextDefinition() extends Definition {
     override def execute: Map[String, Any] = {
-      val e = dslMatcher(List(doc.body()))
+      val e = dslMatcher(List(doc.body()).filter(_ != null))
       e.size match {
         case 0 => Map(_key -> List())
         case 1 => Map(_key -> e.head.text())
@@ -122,7 +123,7 @@ trait HtmlParserDefinition extends HtmlParserBase {
 
   case class AttrDefinition(_a: String) extends Definition {
     override def execute: Map[String, Any] = {
-      val results = dslMatcher(List(doc.body())).map(_.attr(_a)).filter(!_.isEmpty)
+      val results = dslMatcher(List(doc.body()).filter(_ != null)).map(_.attr(_a)).filter(!_.isEmpty)
       results.size match {
         case 0 => Map(_key -> List())
         case 1 => Map(_key -> results.head)
@@ -134,8 +135,12 @@ trait HtmlParserDefinition extends HtmlParserBase {
   case class NestDefinition(definitions: Seq[Definition]) extends Definition {
     override def execute: Map[String, Any] = {
       val res = definitions
-        .map(d => d.execute.asInstanceOf[Map[String, List[String]]].head)
-        .filter(_._2.nonEmpty).map(k => k._2.map(i => (k._1, i))).transpose.map(_.toMap)
+        .map(d =>
+          Try(d.execute.asInstanceOf[Map[String, List[String]]].head).getOrElse(("", List()))
+        )
+        .filter(_._2.nonEmpty)
+        .map(k => k._2.map(i => (k._1, i)))
+        .transpose.map(_.toMap)
       Map(_key -> res)
     }
   }
