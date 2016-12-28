@@ -1,7 +1,7 @@
 /**
   * chengpohi@gmail.com
   */
-package com.github.chengpohi.api.dsl
+package com.github.chengpohi.html.dsl
 
 import java.io.File
 
@@ -16,7 +16,7 @@ class DSLTest extends FlatSpec with Matchers {
   val doc = Jsoup.parse(new File(this.getClass.getResource("/test.html").getFile), "utf-8")
   val documentDSL: DocumentDSL = new DocumentDSL(doc)
 
-  import com.github.chengpohi.helper.HtmlParserHelper._
+  import com.github.chengpohi.html.helper.HtmlParserHelper._
   import documentDSL._
 
   it should "select element by id" in {

@@ -8,7 +8,7 @@ How about using SQL syntax to parse html? :)
   val doc = Jsoup.parse(new File(this.getClass.getResource("/test.html").getFile), "utf-8")
   val documentDSL: DocumentDSL = new DocumentDSL(doc)
 
-  import com.github.chengpohi.helper.HtmlParserHelper._
+  import com.github.chengpohi.html.helper.HtmlParserHelper._
   import documentDSL._
 
   it should "select element by id" in {

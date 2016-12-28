@@ -14,7 +14,7 @@ class HDSLInterpreterTest extends FlatSpec with Matchers {
   val doc = Jsoup.parse(new File(this.getClass.getResource("/test.html").getFile), "utf-8")
   val interpreter: HDSLInterpreter = new HDSLInterpreter(doc)
 
-  import com.github.chengpohi.helper.HtmlParserHelper._
+  import com.github.chengpohi.html.helper.HtmlParserHelper._
 
   it should "parse text" in {
     val result: String = interpreter.intercept("""select to text where id eq "ac-gn-menuanchor-close" as "menu"""".stripMargin)

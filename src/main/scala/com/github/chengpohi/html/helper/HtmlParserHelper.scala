@@ -1,7 +1,7 @@
 /**
   * chengpohi@gmail.com
   */
-package com.github.chengpohi.helper
+package com.github.chengpohi.html.helper
 
 import org.json4s.DefaultFormats
 import org.json4s.native.Serialization.write

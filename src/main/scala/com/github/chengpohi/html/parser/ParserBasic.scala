@@ -1,4 +1,4 @@
-package com.github.chengpohi.parser
+package com.github.chengpohi.html.parser
 
 import fastparse.all._
 

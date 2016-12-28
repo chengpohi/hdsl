@@ -1,6 +1,6 @@
 package com.github.chengpohi
 
-import com.github.chengpohi.parser.HDSLParser
+import com.github.chengpohi.html.parser.HDSLParser
 import fastparse.core.Parsed.{Failure, Success}
 import org.jsoup.nodes.Document
 

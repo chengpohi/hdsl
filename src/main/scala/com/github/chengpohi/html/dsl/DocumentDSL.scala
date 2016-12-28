@@ -1,7 +1,7 @@
 /**
   * chengpohi@gmail.com
   */
-package com.github.chengpohi.api.dsl
+package com.github.chengpohi.html.dsl
 
 import org.jsoup.nodes.Document
 

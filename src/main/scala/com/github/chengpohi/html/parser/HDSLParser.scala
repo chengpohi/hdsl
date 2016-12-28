@@ -1,7 +1,7 @@
-package com.github.chengpohi.parser
+package com.github.chengpohi.html.parser
 
 
-import com.github.chengpohi.api.dsl.{Definition, HtmlParserDefinition}
+import com.github.chengpohi.html.dsl.{Definition, HtmlParserDefinition}
 import fastparse.noApi._
 import org.jsoup.nodes.Document
 
