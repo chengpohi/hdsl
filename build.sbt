@@ -4,7 +4,7 @@ organization := "com.github.chengpohi"
 
 version := "0.1-SNAPSHOT"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.1"
 
 unmanagedBase := baseDirectory.value / "lib"
 
@@ -15,11 +15,11 @@ ivyScala := ivyScala.value map {
 }
 
 libraryDependencies ++= Seq(
-  "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test",
-  "com.lihaoyi" %% "fastparse" % "0.4.1",
+  "org.scalatest" %% "scalatest" % "3.0.1" % "test",
+  "com.lihaoyi" %% "fastparse" % "0.4.2",
   "org.jsoup" % "jsoup" % "1.8.3",
-  "org.json4s" %% "json4s-native" % "3.2.10",
-  "org.json4s" %% "json4s-jackson" % "3.2.10"
+  "org.json4s" %% "json4s-native" % "3.5.0",
+  "org.json4s" %% "json4s-jackson" % "3.5.0"
 )
 
 lazy val compileScalaStyle = taskKey[Unit]("compileScalastyle")
